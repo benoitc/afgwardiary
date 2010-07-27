@@ -1,0 +1,6 @@
+*.gem
+*.swp
+*.pyc
+.DS_Store
+*.so
+.couchapprc

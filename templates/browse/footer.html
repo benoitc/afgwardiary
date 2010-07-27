@@ -1,0 +1,110 @@
+        </table>
+        <div class="paginator"></div>
+    </section>
+
+  </body>
+  <script src="/_utils/script/sha1.js"></script>
+  <script src="/_utils/script/json2.js"></script>
+  <script src="/_utils/script/jquery.js"></script>
+  <script src="/_utils/script/jquery.couch.js"></script>
+  <script src="{{assetPath}}/vendor/couchapp/jquery.couch.app.js"></script>
+  <script src="{{assetPath}}/vendor/couchapp/jquery.couch.app.util.js"></script>
+  <script src="{{assetPath}}/vendor/couchapp/jquery.mustache.js"></script>
+  <script src="{{assetPath}}/vendor/couchapp/jquery.evently.js"></script>
+
+
+  <script type="text/javascript" charset="utf-8">
+      var assetPath = "{{ assetPath }}",
+          firstKey = {{ firstKey }},
+          endKey = {{ endKey }},
+          prevKey = {{ prevKey }},
+          currentView = "{{ currentView }}";
+
+      $.couch.app(function(app) {
+        var makePath = app.require("vendor/couchapp/lib/path").makePath;
+
+        var paginator = "";
+        if (prevKey.length > 0) {
+            paginator = '<a class="prev" href="' 
+            + makePath(["..", "..", "_list", "browse",
+                        currentView, {
+                                    startkey: prevKey,
+                                    endkey: firstKey,
+                                    limit: 10,
+                                    include_docs: true,
+                                    descending: true
+            }])
+            + '">previous</a>';
+            }
+
+        if (endKey.length > 0) {
+            if (paginator) paginator += " - ";
+            paginator += '<a class="next" href="' 
+            + makePath(["..", "..", "_list", "browse",
+                        currentView, {
+                                    startkey: endKey,
+                                    endkey: [endKey[0], {}],
+                                    limit: 10,
+                                    include_docs: true,
+                                    descending: true
+                                    prevKey: JSON.stringify(firstKey)
+            }])
+            + '">next</a>';
+        }
+
+        $(".paginator").html(paginator);
+
+        $(".browse").bind("click", function(e) {
+            e.preventDefault();
+
+            var viewName = $(this).attr("id");
+            var templates = app.ddoc.templates;
+            
+            var obj = $(this);
+
+            if (obj.hasClass("toggle")) {
+                obj.parent().parent().find('.cbrowse').detach() 
+                obj.removeClass("toggle");
+                return;
+            }
+           
+            is_browse = $(".cbrowse");
+            if (is_browse.length > 0) {
+                is_browse.parent().find("a").removeClass("toggle");
+                $(is_browse).detach();
+            }
+
+            obj.addClass("toggle");
+            app.view(viewName, {
+                group: true,
+                success: function(data) {
+                    var cnt = $.mustache(templates.browseBox, {
+                        links: data.rows.map(function(r) {
+                            var link = makePath(["..", "..", "_list", "browse",
+                                "by_" + viewName, {
+                                    startkey: [r.key],
+                                    endkey: [r.key, {}],
+                                    limit: 10,
+                                    include_docs: true,
+                                    descending: true
+                            }]); 
+                            return {
+                                name: r.key,
+                                nb: r.value,
+                                link: link 
+                            };
+                        
+                        })
+                    });
+
+                    var ul = $(cnt);
+                    obj.parent().parent().after().append(ul);
+                
+                }
+            });
+            
+            return false;
+        });        
+      });
+</script>
+</html>

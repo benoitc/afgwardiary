@@ -31,8 +31,7 @@
                                     startkey: prevKey,
                                     endkey: firstKey,
                                     limit: 10,
-                                    include_docs: true,
-                                    descending: true
+                                    include_docs: true
             }])
             + '">previous</a>';
             }
@@ -46,13 +45,15 @@
                                     endkey: [endKey[0], {}],
                                     limit: 10,
                                     include_docs: true,
-                                    descending: true
                                     prevKey: JSON.stringify(firstKey)
             }])
             + '">next</a>';
         }
 
         $(".paginator").html(paginator);
+
+        
+
 
         $(".browse").bind("click", function(e) {
             e.preventDefault();
@@ -85,8 +86,7 @@
                                     startkey: [r.key],
                                     endkey: [r.key, {}],
                                     limit: 10,
-                                    include_docs: true,
-                                    descending: true
+                                    include_docs: true
                             }]); 
                             return {
                                 name: r.key,
@@ -104,7 +104,9 @@
             });
             
             return false;
-        });        
+        });
+
+      
       });
 </script>
 </html>

@@ -1,0 +1,221 @@
+        </table>
+        <div class="paginator"></div>
+    </section>
+
+  </body>
+  <script src="/_utils/script/sha1.js"></script>
+  <script src="/_utils/script/json2.js"></script>
+  <script src="/_utils/script/jquery.js"></script>
+  <script src="/_utils/script/jquery.couch.js"></script>
+  <script src="{{assetPath}}/vendor/couchapp/jquery.couch.app.js"></script>
+  <script src="{{assetPath}}/vendor/couchapp/jquery.couch.app.util.js"></script>
+  <script src="{{assetPath}}/vendor/couchapp/jquery.mustache.js"></script>
+  <script src="{{assetPath}}/vendor/couchapp/jquery.evently.js"></script>
+
+
+  <script type="text/javascript" charset="utf-8">
+      var assetPath = "{{ assetPath }}",
+          firstKey = {{ firstKey }},
+          endKey = {{ endKey }},
+          prevKey = {{ prevKey }},
+          currentView = "{{ currentView }}";
+
+      $.couch.app(function(app) {
+        var makePath = app.require("vendor/couchapp/lib/path").makePath;
+
+        var paginator = "";
+        if (prevKey.length > 0) {
+            paginator = '<a class="prev" href="' 
+            + makePath(["..", "..", "_list", "browse",
+                        currentView, {
+                                    startkey: prevKey,
+                                    endkey: firstKey,
+                                    limit: 10,
+                                    include_docs: true,
+                                    descending: true
+            }])
+            + '">previous</a>';
+            }
+
+        if (endKey.length > 0) {
+            if (paginator) paginator += " - ";
+            paginator += '<a class="next" href="' 
+            + makePath(["..", "..", "_list", "browse",
+                        currentView, {
+                                    startkey: endKey,
+                                    endkey: [endKey[0], {}],
+                                    limit: 10,
+                                    include_docs: true,
+                                    descending: true,
+                                    prevKey: JSON.stringify(firstKey)
+            }])
+            + '">next</a>';
+        }
+
+        $(".paginator").html(paginator);
+
+        $("#kw").click(function() {
+
+                view_name = currentView.split("_")[1] + "_kw"
+                app.view(view_name, {
+                    startkey: firstKey[0],
+                    endkey: firstKey[0] + "0",
+                    group: true,
+                    success: function(data) {
+                         
+                        var series = [[],[], [], [], [], []];
+
+                        for(var i=0; i< data.rows.length; i++) {
+                            var row = data.rows[i];
+                            console.log(row.key);
+                            var day = parseInt(row.key.split("-")[3]);
+
+                            series[0].push({x: day,
+                                y: row.value["EnemyKIA"]});
+                            series[1].push({x: day,
+                                y: row.value["EnemyWIA"]});
+                            series[2].push({x: day,
+                                y: row.value["FriendlyKIA"]});
+                            series[3].push({x: day,
+                                y: row.value["FriendlyWIA"]});
+                            series[4].push({x: day,
+                                y: row.value["HostNationKIA"]});
+                            series[5].push({x: day,
+                                y: row.value["HostNationWIA"]});
+                        };
+
+                        console.log(series);
+                        var w = 600,
+                            h = 400,
+                            x = pv.Scale.linear(series,pv.index).range(0, w),
+                            y = pv.Scale.linear(series).range(0, h),
+                            i = -1;
+
+
+                        var vis = new pv.Panel()
+                            .width(w)
+                            .height(h)
+                            .bottom(20)
+                            .left(20)
+                            .right(10)
+                            .top(5);
+
+
+
+                        vis.add(pv.Rule)
+                            .data(y.ticks())
+                            .visible(function() !(this.index % 2))
+                            .bottom(function(d) Math.round(y(d)) - .5)
+                            .strokeStyle(function(d) d ? "#eee" : "#000")
+                            .anchor("left").add(pv.Label)
+                            .text(function(d) d.toFixed(1));
+
+                        /* X-ticks. */
+                        vis.add(pv.Rule)
+                            .data(x.ticks())
+                            .visible(function(d) d > 0)
+                            .left(function(d) Math.round(x(d)) - .5)
+                            .strokeStyle(function(d) d ? "#eee" : "#000")
+                            .anchor("bottom").add(pv.Label)
+                            .text(function(d) d.toFixed());
+
+                        var panel = vis.add(pv.Panel)
+                            .data(series);
+                        var line = panel.add(pv.Line)
+                            .data(function(d) d)
+                            .left(function(d) x(d.x))
+                            .bottom(function(d) y(d.y))
+                            .lineWidth(2);
+
+                        /* The mouseover dots and label. */
+                        line.add(pv.Dot)
+                            .visible(function() i >= 0)
+                            .data(function(d) [d[i]])
+                            .fillStyle(function() line.strokeStyle())
+                            .strokeStyle("#000")
+                            .size(20) 
+                            .lineWidth(1)
+                            .add(pv.Dot)
+                            .left(10)
+                            .bottom(function() this.parent.index * 12 + 10)
+                            .anchor("right").add(pv.Label)
+                            .text(function(d) d.y.toFixed(2));
+
+                        /* An invisible bar to capture events (without flickering). */
+                        vis.add(pv.Bar)
+                            .fillStyle("rgba(0,0,0,.001)")
+                            .event("mouseout", function() {
+                                    i = -1;
+                                    return vis;
+                                    })
+                            .event("mousemove", function() {
+                                var mx = x.invert(vis.mouse().x);
+                                i = pv.search(data[0].map(function(d) d.x), mx);
+                                i = i < 0 ? (-i - 2) : i;
+                                return vis;
+                                });
+
+                        vis.canvas("graph1" ).render();
+                        
+                    }
+                    
+                });
+        });
+
+
+
+
+        $(".browse").bind("click", function(e) {
+            e.preventDefault();
+
+            var viewName = $(this).attr("id");
+            var templates = app.ddoc.templates;
+            
+            var obj = $(this);
+
+            if (obj.hasClass("toggle")) {
+                obj.parent().parent().find('.cbrowse').detach() 
+                obj.removeClass("toggle");
+                return;
+            }
+           
+            is_browse = $(".cbrowse");
+            if (is_browse.length > 0) {
+                is_browse.parent().find("a").removeClass("toggle");
+                $(is_browse).detach();
+            }
+
+            obj.addClass("toggle");
+            app.view(viewName, {
+                group: true,
+                success: function(data) {
+                    var cnt = $.mustache(templates.browseBox, {
+                        links: data.rows.map(function(r) {
+                            var link = makePath(["..", "..", "_list", "browse",
+                                "by_" + viewName, {
+                                    startkey: [r.key],
+                                    endkey: [r.key, {}],
+                                    limit: 10,
+                                    include_docs: true,
+                                    descending: true
+                            }]); 
+                            return {
+                                name: r.key,
+                                nb: r.value,
+                                link: link 
+                            };
+                        
+                        })
+                    });
+
+                    var ul = $(cnt);
+                    obj.parent().parent().after().append(ul);
+                
+                }
+            });
+            
+            return false;
+        });        
+      });
+</script>
+</html>

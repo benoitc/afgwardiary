@@ -42,11 +42,14 @@ function(head, req) {
             prevKey = req.query.prevKey || [],
             viewName = req.path[req.path.length-1],
             limit = req.query.limit || 0;
-             
+            
+        is_graph_date = (viewName == "by_date");
+
         send(Mustache.to_html(templates.browse.header, {
             assetPath: assetPath,
             browsePath: browsePath,
-            browseKey: browseKey
+            browseKey: browseKey,
+            is_graph_date: is_graph_date
         }));
 
         if (typeof(prevKey) == "string") {
@@ -70,7 +73,8 @@ function(head, req) {
             endKey: JSON.stringify(endKey),
             browseKey: browseKey,
             prevKey: JSON.stringify(prevKey),
-            currentView: viewName
+            currentView: viewName,
+            is_graph_date: is_graph_date
         });
     });
 }

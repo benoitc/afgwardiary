@@ -4,8 +4,8 @@ body {
 	text-align: center;
 	font-size: 11pt;
 	font-family: Helvetica, Arial, sans-serif;	
-	background: url(../gfx/headbg.jpg) no-repeat top center;
 }
+
 html {
 	background: none;
 	z-index: -9999;
@@ -49,9 +49,7 @@ p {
 	text-indent: 15px;
 	color: #555;
 }
-i {
-	font-size: 9pt;
-}
+
 label {
 	display: inline-block;
 	margin-top: 8px;
@@ -78,18 +76,6 @@ pre {
 	padding: 10px;
 	width: 728px;
 }
-div.overMap {
-	width: 100%;
-	border: 1px solid #aaa;
-	margin-top: 10px;
-}
-li {
-	list-style: disc;
-	margin-bottom: 0.2em;
-	margin-left: 3em;
-	text-align: left;
-}
-
 div.main {
 	width: 1000px;
 	margin: 0px auto;
@@ -122,26 +108,27 @@ div.rsmall {
 	width: 25%;
 }
 
-section, section * {
-    text-align: left;
-}
+
 section.big {
     display: block
 	text-align: left;
 	width: 75%;
 	background: none;
 	padding-top: 0px;
+    z-index: 0;
 }
-section.big span {
-	text-align: right;
-	margin-top: 10px;
-	margin-bottom: 20px;
-	display: block;
-}
+
 section.big span.abbr {
 	border-bottom: 1px dotted #000;
 	text-align: left;
 	display: inline;
+}
+
+section.big span.labelSpan {
+    text-align: left;
+    margin: 0;
+    padding: 0;
+    display: inline;
 }
 
 form.ed {
@@ -260,16 +247,22 @@ div#browse h3 {
 	margin-top: 30px;
 	margin-bottom: 2px;
 }
-div#mapOverlay {
-	width: 750px;
-	height: 380px;
-	margin: 0px auto;
+
+#map {
+    display: block;
+    position: relative;
+    border:1px solid black;
+    width: 100%;
+    height: 426px;
+    margin: 0;
+    padding: 0;
+    z-index: 0;
 }
 
-div.mapIndex {
-	width: 100%;
-	height: 100%;
+.olControlScaleLineBottom {
+    display: none;
 }
+
 .clear {
 	clear: both;
 	margin: 0px;
@@ -280,3 +273,4 @@ div.mapIndex {
 	clear: both;
 	text-align: center;
 }
+

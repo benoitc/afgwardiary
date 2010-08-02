@@ -226,6 +226,7 @@ DColor: {{ DColor }}
 
 
             function jsonLayer(refresh) {
+
                 if (refresh) {
                     var num = map.getNumLayers();
                     for (var j=1; j<num; j++) {
@@ -245,7 +246,7 @@ DColor: {{ DColor }}
                     strategies: [new OpenLayers.Strategy.BBOX()],
                     projection: new OpenLayers.Projection("EPSG:4326"),
                     protocol: new OpenLayers.Protocol.HTTP({
-                        url: "http://127.0.0.1:5984" + app.design.uri +
+                        url: app.design.uri +
                             "_spatiallist/reports/report",
                         params: {
                             years: years
@@ -260,8 +261,9 @@ DColor: {{ DColor }}
 
                 var report_ctl =  new OpenLayers.Control.SelectFeature(json_layer, {
                     onSelect: function(feature) {
-                        console.log(feature);
-                        document.location.href = feature.data.href;
+                        map.destroy(); 
+                        window.location.href = feature.data.href;
+                        return false;
                     }
                 });
                 map.addControl(report_ctl);

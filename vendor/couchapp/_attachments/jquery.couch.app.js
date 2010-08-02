@@ -19,6 +19,45 @@
 // });
 
 (function($) {
+
+  function ajax(obj, options, errorMessage, ajaxOptions) {
+    options = $.extend({successStatus: 200}, options);
+    ajaxOptions = $.extend({contentType: "application/json"}, ajaxOptions);
+    errorMessage = errorMessage || "Unknown error";
+    $.ajax($.extend($.extend({
+      type: "GET", dataType: "json", cache : !$.browser.msie,
+      beforeSend: function(xhr){
+        if(ajaxOptions && ajaxOptions.headers){
+          for (var header in ajaxOptions.headers){
+            xhr.setRequestHeader(header, ajaxOptions.headers[header]);
+          }
+        }
+      },
+      complete: function(req) {
+        try {
+          var resp = $.httpData(req, "json");
+        } catch(e) {
+          if (options.error) {
+            options.error(req.status, req, e);
+          } else {
+            alert(errorMessage + ": " + e);
+          }
+          return;
+        }
+        if (options.ajaxStart) {
+          options.ajaxStart(resp);
+        }
+        if (req.status == options.successStatus) {
+          if (options.beforeSuccess) options.beforeSuccess(req, resp);
+          if (options.success) options.success(resp);
+        } else if (options.error) {
+          options.error(req.status, resp && resp.error || errorMessage, resp && resp.reason || "no response");
+        } else {
+          alert(errorMessage + ": " + resp.reason);
+        }
+      }
+    }, obj), ajaxOptions));
+  }
   
   function Design(db, name) {
     this.doc_id = "_design/"+name;
@@ -28,6 +67,20 @@
     this.list = function(list, view, opts) {
       db.list(name+'/'+list, view, opts);
     };
+
+    this.uri = db.uri + this.doc_id + "/";
+
+    this.spatial = function(spatial, options) {
+        var options = options || {};
+        var type = "GET";
+        var data= null;
+        ajax({
+            type: type,
+            data: data,
+            url: db.uri + "_design/"+ name + "/_spatial/" 
+                + spatial + $.encodeOptions(options)
+        }, options, "An error occurred accessing the spatial function");
+    }
   }
 
   $.couch.app = $.couch.app || function(appFun, opts) {

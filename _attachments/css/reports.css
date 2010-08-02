@@ -274,3 +274,12 @@ div#browse h3 {
 	text-align: center;
 }
 
+#mtimes ul {
+    list-style: none;
+}
+
+#mtimes ul li {
+    display: block;
+    float: left;
+    margin-right: 5px;
+}

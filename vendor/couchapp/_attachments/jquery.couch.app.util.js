@@ -81,3 +81,20 @@ $.argsToArray = function(args) {
   };
   return array;
 }
+
+$.encodeOptions = function(options) {
+    var buf = [];
+    if (typeof(options) === "object" && options !== null) {
+        for (var name in options) {
+            if ($.inArray(name, ["error", "success", "beforeSuccess", "ajaxStart"]) >= 0)
+                continue;
+            var value = options[name];
+            if ($.inArray(name, ["key", "startkey", "endkey"]) >= 0) {
+                value = toJSON(value);
+            }
+            buf.push(encodeURIComponent(name) + "=" + encodeURIComponent(value));
+        }
+    }
+    return buf.length ? "?" + buf.join("&") : "";
+}
+

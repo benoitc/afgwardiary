@@ -109,7 +109,7 @@ DColor: {{ DColor }}
         </code>
         <br>
         <div id="map"></div>  
-        
+        <form id="mtimes"></form> 
         {{/doc}}
     
     </section>
@@ -128,11 +128,15 @@ DColor: {{ DColor }}
   <script type="text/javascript" charset="utf-8">
       var assetPath = "{{ assetPath }}";
 
+      {{#doc}}var docDate = "{{Date }}";{{/doc}}
+
       $.couch.app(function(app) {
               var makePath = app.require("vendor/couchapp/lib/path").makePath;
 
 
         $(document).ready(function(){ 
+
+            
                  
             function make_point(lon, lat) {
                 var point = new OpenLayers.Geometry.Point( lon, lat);
@@ -144,77 +148,147 @@ DColor: {{ DColor }}
         
             {{#doc}}
 
+            var epsg4326 = new OpenLayers.Projection("EPSG:4326");
+            var epsg900913 =  new OpenLayers.Projection("EPSG:900913")
 
-            var bounds = new OpenLayers.Bounds(57.499846, 25.5000872,
-                72.4998462, 40.5000872);
+
+            var afgLL = new OpenLayers.LonLat(57.499846, 25.5000872);
+            var afgUR = new OpenLayers.LonLat(72.4998462, 40.5000872);
+            afgLL.transform(epsg4326, epsg900913);
+            afgUR.transform(epsg4326, epsg900913);
+
+            var bounds = new OpenLayers.Bounds(afgLL.lon, afgLL.lat,
+                    afgUR.lon, afgUR.lat);
 
 
-        var epsg4326 = new OpenLayers.Projection("EPSG:4326");
-        var epgs900913 =  new OpenLayers.Projection("EPSG:900913")
-        var options = {
-            projection:epsg4326,
-            displayProjection: epsg4326,
-            numZoomLevel:10,
-            units: "m",
-            maxExtent: bounds.clone().transform(epsg4326,
-                    epgs900913),
-            restrictedExtent: bounds.clone().transform(epsg4326,
-                    epgs900913),
-            displayOutsideMaxExtent: true,
-            wrapDateLine: true,
-            styleId: 1,
-            isBaseLayer: true,
-        };
+            var options = {
+                maxExtent: bounds.clone(),
+                restrictedExtent: bounds.clone(),
+                numZoomLevels: 20,
+                maxResolution: 156543.0339,
+                projection: new OpenLayers.Projection("EPSG:900913"),
+                displayProjection: new OpenLayers.Projection("EPSG:4326"),
+                units: "degrees",
+                control: []
+            };
+                
+
+
+            var map = new OpenLayers.Map('map', options);
+            var gphy = new OpenLayers.Layer.Google(
+                "Google Physical",
+                {type: google.maps.MapTypeId.TERRAIN, sphericalMercator: true}
+            );
+            var gmap = new OpenLayers.Layer.Google(
+                "Google Streets", // the default
+                {numZoomLevels: 20, sphericalMercator: true}
+            );
+            var ghyb = new OpenLayers.Layer.Google(
+                "Google Hybrid",
+                {type: google.maps.MapTypeId.HYBRID, numZoomLevels: 20, sphericalMercator: true}
+            );
+            var gsat = new OpenLayers.Layer.Google(
+                "Google Satellite",
+                {type: google.maps.MapTypeId.SATELLITE, numZoomLevels:
+                22, sphericalMercator: true}
+                );
+
+            map.addLayers([gphy, gmap, ghyb, gsat]);
+
+            var customControls = [new OpenLayers.Control.DragPan(),
+                                new OpenLayers.Control.PanZoom(),
+                                new OpenLayers.Control.LayerSwitcher()];
+            
+            for (var i=0; i<customControls.length; i++) {
+                var control = customControls[i];
+                map.addControl(control);
+                control.activate();
+            }
+
+
+            var point = new OpenLayers.Geometry.Point( {{Longitude}}, {{Latitude}} );
+
+            point = new OpenLayers.Projection.transform(point, epsg4326,
+                    epsg900913);
+
+            var latlng = new OpenLayers.LonLat(point.x, point.y);
+
+            // place current point
+            var vectorLayer = new OpenLayers.Layer.Vector("Overlay");
+            var feature = new OpenLayers.Feature.Vector(
+                    point,
+                    {some:'( {{Type}}) {{Title}}'},
+                    { externalGraphic:
+                    '{{assetPath}}/openlayers/img/marker.png',
+                    graphicHeight: 25, graphicWidth: 21});
+            vectorLayer.addFeatures(feature);
+            map.addLayer(vectorLayer)
+
+
+            function jsonLayer(refresh) {
+                if (refresh) {
+                    var num = map.getNumLayers();
+                    for (var j=1; j<num; j++) {
+                        map.removeLayer( map.layers[1] );
+                    }  
+                }
+                var years = "";
+                var sep="";
+                $("#mtimes input:checked").each(function() {
+                    console.log($(this).val());
+                    years += sep + $(this).val();
+                    sep = ",";
+                });
+
+                json_layer = new OpenLayers.Layer.Vector("Reports", {
+                    strategies: [new OpenLayers.Strategy.BBOX()],
+                    projection: new OpenLayers.Projection("EPSG:4326"),
+                    protocol: new OpenLayers.Protocol.HTTP({
+                        url: "http://127.0.0.1:5984" + app.design.uri +
+                            "_spatiallist/reports/report",
+                        params: {
+                            years: years
+                        },
+                        format: new OpenLayers.Format.GeoJSON()
+                    })//,
+                    //styleMap: new OpenLayers.StyleMap(style)
+                });
+                map.addLayer(json_layer);
+
+                if (refresh) json_layer.redraw(true);
+            }
+
             
 
 
-        var map = new OpenLayers.Map('map', options);
+            var day = docDate.split(" ")[0];
+            var year = parseInt(day.split("-")[0]);
 
-        var gphy = new OpenLayers.Layer.Google(
-            "Google Physical",
-            {type: google.maps.MapTypeId.TERRAIN}
-        );
-        var gmap = new OpenLayers.Layer.Google(
-            "Google Streets", // the default
-            {numZoomLevels: 20}
-        );
-        var ghyb = new OpenLayers.Layer.Google(
-            "Google Hybrid",
-            {type: google.maps.MapTypeId.HYBRID, numZoomLevels: 20}
-        );
-        var gsat = new OpenLayers.Layer.Google(
-            "Google Satellite",
-            {type: google.maps.MapTypeId.SATELLITE, numZoomLevels: 22}
-        );
- 
+            var form = $("#mtimes");
+            var ul = $("<ul></ul>");
+            for (i=2004; i<2010; i++) {
+                if (year == i) {
+                    selected=' checked="checked"';
+                } else {
+                    selected = "";
+                }    
+                var li = $('<li><input type="checkbox"'
+                        +'value="'+i+'"' + selected + '>&nbsp;'+i+'</li>');
+                ul.append(li);
+            }
+            form.append(ul);
+            var refreshb = $('<input type="submit" value="display">')
+            .click(function(e) {
+                e.preventDefault();
+                jsonLayer(true);
+                return false;
+             
+            })
+            .appendTo(form);
 
-        map.addLayers([gphy, gmap, ghyb, gsat]);
+            jsonLayer();
+            map.setCenter(latlng, 12);
 
-
-        //map.zoomToExtent();
-        
-
-        var point = make_point( {{Longitude}}, {{Latitude}} );
-
-        var latlng = new OpenLayers.LonLat(point.x, point.y   );
-
-        map.addControl(new OpenLayers.Control.LayerSwitcher());
-
-
-        
-
-        var vectorLayer = new OpenLayers.Layer.Vector("Overlay");
-        var feature = new OpenLayers.Feature.Vector(
-                point,
-                {some:'( {{Type}}) {{Title}}'},
-                {externalGraphic: '{{assetPath}}/openlayers/img/marker.png', graphicHeight: 21, graphicWidth: 16});
-        vectorLayer.addFeatures(feature);
-
-
-        map.addLayer(vectorLayer);
-
-        map.setCenter(latlng, 12);
-        //map.setCenter(new OpenLayers.LonLat(10.2, 48.9), 5);
         {{/doc}}
         });
         

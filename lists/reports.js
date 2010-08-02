@@ -7,7 +7,7 @@ function(head, req) {
         
     log(years);
 
-    send('{"type": "FeatureCollection", "features": [{"geometry":{"type":"GeometryCollection","geometries":[');
+    send('{"type": "FeatureCollection", "features": [');
 
     var sep = "";
     var i = 0;
@@ -18,17 +18,23 @@ function(head, req) {
 
             var link = path.show("report", row.value[0]);
 
-            var point = {
-                coordinates: row.value[2],
-                type : "Point",
-                id: row.value[0]
-            };
-            send(sep + toJSON(point));
+            var feature = {
+                type: "Feature",
+                id: row.value[0],
+                properties: {
+                    href: link
+                },
+                geometry: {
+                    coordinates: row.value[2],
+                    type : "Point"
+                }
+            }
+            send(sep + toJSON(feature));
             sep = ', ';
             i += 1;
         }
     }
-    return ']}}]}';
+    return ']}';
 
 
 }

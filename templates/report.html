@@ -241,6 +241,7 @@ DColor: {{ DColor }}
                 });
 
                 json_layer = new OpenLayers.Layer.Vector("Reports", {
+
                     strategies: [new OpenLayers.Strategy.BBOX()],
                     projection: new OpenLayers.Projection("EPSG:4326"),
                     protocol: new OpenLayers.Protocol.HTTP({
@@ -253,9 +254,20 @@ DColor: {{ DColor }}
                     })//,
                     //styleMap: new OpenLayers.StyleMap(style)
                 });
+
+                map.addLayer(vectorLayer)
                 map.addLayer(json_layer);
 
+                var report_ctl =  new OpenLayers.Control.SelectFeature(json_layer, {
+                    onSelect: function(feature) {
+                        console.log(feature);
+                        document.location.href = feature.data.href;
+                    }
+                });
+                map.addControl(report_ctl);
+                
                 if (refresh) json_layer.redraw(true);
+                report_ctl.activate();
             }
 
             

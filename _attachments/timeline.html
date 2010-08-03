@@ -6,6 +6,9 @@
     <link href='gfx/favicon.ico' rel='shortcut icon'>
     <link href='css/reset-fonts-grids.css' rel='stylesheet' type='text/css'>
     <link href='css/reports.css' rel='stylesheet' type='text/css'>
+    <script type="text/javascript"
+        src="http://maps.google.com/maps/api/js?sensor=false"></script>
+    <link href='openlayers/theme/default/style.css' rel='stylesheet' type='text/css'>
     <script src='js/modernizr-1.5.min.js'></script>
     <script>
         Timeline_ajax_url ="timeline/ajax/simile-ajax-api.js";
@@ -13,9 +16,11 @@
         Timeline_parameters='bundle=true';
     </script>
     <script src='timeline/js/timeline-api.js'></script>
+    <script type="text/javascript" src="openlayers/OpenLayers.js"></script>
+
 </head>
 <body>
-    <sidebar class="small pane">
+    <!--<sidebar class="small pane">
         <a href='index.html'><img alt='WikiLeaks logo'
             src='gfx/WL_Hour_Glass_small.png'></a>
         <div><h3>Browse by <a id="type" href="#"
@@ -28,10 +33,15 @@
                     class="browse">Affiliation</a></h3></div>
         <div><h3>Browse by <a id="date" href="#"
                     class="browse">Date</a></h3></div>
-    </sidebar>
-    <section class='pane big'>
+        </sidebar>-->
+    <section id="afg-browser">
         <h1>AFG War Diary Timeline</h1>
-        <div id="afg-timeline"></div>
+        <div id="timeline-container">
+            <div id="afg-timeline"></div>
+        </div>
+        <div id="map-container">
+            <div id="map"></div>
+        </div>
     </section>
 </body>
 <script src="vendor/couchapp/loader.js"></script>
@@ -40,7 +50,7 @@
 
 <script>
     $.couch.app(function(app) {
-        new $.afgwardiary.Navigation(app);
+        //new $.afgwardiary.Navigation(app);
         new $.afgwardiary.afgTimeline(app);
     }); 
 </script>

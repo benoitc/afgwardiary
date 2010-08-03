@@ -1,5 +1,5 @@
 body {
-	width: 1000px;
+	width: 960px;
 	margin: 0px auto;
 	text-align: center;
 	font-size: 11pt;
@@ -130,6 +130,12 @@ section.big span.labelSpan {
     padding: 0;
     display: inline;
 }
+
+section#afg-browser {
+    display: block;
+    width: 100%;
+}
+
 
 form.ed {
 	text-align: center;
@@ -269,7 +275,8 @@ div#browse h3 {
 	margin-top: 8px;
 	
 }
-.footer {
+footer {
+    display: block;
 	clear: both;
 	text-align: center;
 }
@@ -284,9 +291,34 @@ div#browse h3 {
     margin-right: 5px;
 }
 
+
+div#timeline-container {
+    width: 100%;
+    height: 200px;
+}
+.timeline-band-inner {
+    height: 40px;
+}
+
 #afg-timeline {
     display: block;
-    border: 1px solid #aaa;
-    height: 150px;
+    font-size: 65%;
+    background: #CCCCCC;
+    
+    height: 100%;
     width: 100%;
 }
+
+#map-container {
+    width: 100%;
+    height: 400px;
+}
+
+#map-container #map {
+    width: 100%;
+    height: 100%;
+    background: #EEEEEE;
+    border: none;
+}
+
+

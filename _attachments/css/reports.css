@@ -283,3 +283,10 @@ div#browse h3 {
     float: left;
     margin-right: 5px;
 }
+
+#afg-timeline {
+    display: block;
+    border: 1px solid #aaa;
+    height: 150px;
+    width: 100%;
+}

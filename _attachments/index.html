@@ -7,10 +7,8 @@
     <link href='css/reset-fonts-grids.css' rel='stylesheet' type='text/css'>
     <link href='css/reports.css' rel='stylesheet' type='text/css'>
     <script src='js/modernizr-1.5.min.js' type='text/javascript' type='text/javascript'></script>
-    <script src='http://maps.google.com/maps/api/js?sensor=false' type='text/javascript'></script>
   </head>
   <body>
-    <div id="account"></div>
     <sidebar class="small pane">
         <a href='index.html'><img alt='WikiLeaks logo'
             src='gfx/WL_Hour_Glass_small.png'></a>
@@ -107,60 +105,10 @@
 
   </body>
   <script src="vendor/couchapp/loader.js"></script>
+  <script src="js/afgwardiary.js"></script>
   <script type="text/javascript" charset="utf-8">
       $.couch.app(function(app) {
-        $(".browse").bind("click", function(e) {
-            e.preventDefault();
-
-            var viewName = $(this).attr("id");
-            var templates = app.ddoc.templates;
-
-            var makePath = app.require("vendor/couchapp/lib/path").makePath;
-
-            var obj = $(this);
-
-            if (obj.hasClass("toggle")) {
-                obj.parent().parent().find('.cbrowse').detach() 
-                obj.removeClass("toggle");
-                return;
-            }
-           
-            is_browse = $(".cbrowse");
-            if (is_browse.length > 0) {
-                is_browse.parent().find("a").removeClass("toggle");
-                $(is_browse).detach();
-            }
-
-            obj.addClass("toggle");
-            app.view(viewName, {
-                group: true,
-                success: function(data) {                    
-                    var cnt = $.mustache(templates.browseBox, {
-                        links: data.rows.map(function(r) {
-                            var link = makePath(["_list", "browse",
-                                    "by_" + viewName, {
-                                startkey: [r.key],
-                                endkey: [r.key, {}],
-                                limit: 10,
-                                include_docs: true
-                            }]);
-                            return {
-                                name: r.key,
-                                nb: r.value,
-                                link: link 
-                            };
-                        
-                        })
-                    });
-
-                    var ul = $(cnt);
-                    obj.parent().parent().after().append(ul);
-                
-                }
-            });
-            
-            return false;
-        });        
-    });
+        new $.afgwardiary.Navigation(app);          
+      });
   </script>
 </html>

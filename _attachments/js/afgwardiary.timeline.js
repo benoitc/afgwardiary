@@ -2,7 +2,9 @@
     $.afgwardiary = $.afgwardiary || {};
 
     function afgTimeline(app) {
-        var makePath = app.require("vendor/couchapp/lib/path").makePath;
+        var makePath = app.require("vendor/couchapp/lib/path").makePath,
+            Mustache = app.require("vendor/couchapp/lib/mustache");
+
         var templates = app.ddoc.templates;
         var ddoc = app.ddoc;
         var self = this;
@@ -10,6 +12,7 @@
         var tl,
             map,
             vectorLayer,
+            popup,
             resizeTimerID = null,
             loaded = {},
             dataMaxDate = "";
@@ -142,8 +145,50 @@
                 );
 
             vectorLayer = new OpenLayers.Layer.Vector("Reports");
-
             map.addLayers([gphy, gmap, ghyb, gsat, vectorLayer]);
+
+            
+            click = new OpenLayers.Control.SelectFeature(
+                [vectorLayer],
+                {
+                    clickout: true
+                }
+            );
+            map.addControl(click);
+
+            vectorLayer.events.on({
+                featureselected: function(evt) {
+                    var feature = evt.feature; 
+                    var data = feature.data.event;
+                   
+                    var content = Mustache.to_html(templates.popup, {
+                        title: "(" + data.title + ") " + data.long_title,
+                        link: data.link,
+                        Date: data.start,
+                        Type: data.title,
+                        Affiliation: data.affiliation,
+                        Category: data.category
+                    }); 
+                    
+                    var popup;
+
+                    popup = new OpenLayers.Popup("report", 
+                                new OpenLayers.LonLat(feature.geometry.x, feature.geometry.y),
+                                new OpenLayers.Size(200,220),
+                                content, true, function() {
+                                    popup.destroy();
+                                });
+
+                    popup.keepInMap = true;
+                    popup.panMapIfOutOfView = true;
+                    map.addPopup(popup);
+
+
+                },
+            });
+            click.activate()
+
+           
 
             var customControls = [new OpenLayers.Control.DragPan(),
                                 new OpenLayers.Control.PanZoom(),
@@ -154,12 +199,14 @@
                 map.addControl(control);
                 control.activate();
             }
+            
 
             var center =  new OpenLayers.LonLat(65.0, 33.0);
-            map.setCenter(center.transform(epsg4326, epsg900913), 8);
+            map.setCenter(center.transform(epsg4326, epsg900913), 6);
 
         }
 
+        var oldFeatures = {}; 
             
         this.init = function() {
 
@@ -213,10 +260,30 @@
                     minDate = band.getMinVisibleDate(),
                     maxDate = band.getMaxVisibleDate();
 
+                mind = minDate.getTime();
+                maxd = maxDate.getTime();
+                var features_to_remove = [];
+                for (d in oldFeatures) {
+                    if (d < mind || d > maxd) {
+                        $.each(oldFeatures[d], function(i, val) {
+                            features_to_remove.push(val);
+                        });
+                        delete oldFeatures[d];
+                    }
+                }
+                vectorLayer.destroyFeatures(features_to_remove);
+    
+
                 var iterator = eventSource.getEventIterator(minDate, maxDate);
+                
                 while(iterator.hasNext()) {
                     var evt = iterator.next();
+                    var start = evt.getStart();
                     var obj = evt._obj;
+
+                    
+                    if (!oldFeatures[start.getTime()]) 
+                        oldFeatures[start.getTime()] = [];
 
                     var point = new OpenLayers.Projection.transform(
                             new OpenLayers.Geometry.Point( obj.coordinates[0], obj.coordinates[1]),
@@ -225,7 +292,7 @@
                     var feature = new OpenLayers.Feature.Vector(
                         point,
                         {
-                            some: obj.title
+                            event: obj
                         },
                         {
                             externalGraphic: 'openlayers/img/marker.png',
@@ -233,6 +300,7 @@
                             graphicWidth: 21
                         }
                     );
+                    oldFeatures[start.getTime()].push(feature); 
                     vectorLayer.addFeatures(feature);
                 }
                 

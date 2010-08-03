@@ -26,10 +26,14 @@ function(head, req) {
         var event = {
             start: date_parts[0] + "T" + date_parts[1],
             title: doc.Type,
+            
             description: summary,
             link: path.show("report", doc._id),
             coordinates: coordinates,
-            id: doc._id
+            id: doc._id,
+            long_title: doc.Title,
+            affiliation: doc.Affiliation,
+            category: doc.Category
         }
         send(sep + toJSON(event));
         sep = ",";

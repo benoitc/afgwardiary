@@ -51,17 +51,15 @@
         <div id="afg-timeline">Timeline is loading...</div>
         <div id="afg-map"></div>
     </section>
+    <script src="vendor/couchapp/loader.js"></script>
+    <script src="js/afgwardiary.js"></script>
+    <script src="js/afgwardiary.timeline.js"></script>
+
+    <script>
+        $.couch.app(function(app) {
+            //new $.afgwardiary.Navigation(app);
+            new $.afgwardiary.afgTimeline(app);
+        }); 
+    </script>
 </body>
-<script src="vendor/couchapp/loader.js"></script>
-<script src="js/afgwardiary.js"></script>
-<script src="js/afgwardiary.timeline.js"></script>
-
-<script>
-    $.couch.app(function(app) {
-        //new $.afgwardiary.Navigation(app);
-        new $.afgwardiary.afgTimeline(app);
-    }); 
-</script>
-
-
 </html>

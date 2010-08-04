@@ -293,12 +293,13 @@
 
                 var iterator = eventSource.getEventIterator(minDate, maxDate);
                 while(iterator.hasNext()) {
-                    var evt = iterator.next();
-                    var start = evt.getStart();
-                    var obj = evt._obj;
+                    var evt = iterator.next(),
+                        start = evt.getStart(),
+                        startTime = star.getTime(),
+                        obj = evt._obj;
 
-                    if (!oldFeatures[start.getTime()]) 
-                        oldFeatures[start.getTime()] = [];
+                    if (!oldFeatures[startTime]) 
+                        oldFeatures[startTime] = [];
 
                     var point = new OpenLayers.Projection.transform(
                             new OpenLayers.Geometry.Point( obj.coordinates[0], obj.coordinates[1]),
@@ -315,7 +316,7 @@
                             graphicWidth: 21
                         }
                     );
-                    oldFeatures[start.getTime()].push(feature);
+                    oldFeatures[startTime].push(feature);
                     evt.feature = feature; 
                     vectorLayer.addFeatures(feature);
                 }

@@ -301,6 +301,10 @@ footer {
     width: 100%;
 }
 
+.timeline-band-layer-inner {
+    position: relative;
+}
+
 #afg-map {
     width: 100%;
     height: 400px;

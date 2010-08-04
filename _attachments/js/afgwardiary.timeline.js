@@ -35,6 +35,13 @@
             }
         }
 
+        function changeYear() {
+            var d= new Date($(this).val(), 0, 1);
+            tl.getBand(1).setCenterVisibleDate(d);
+
+            
+        }
+
         function make_key(d) {
             var d1  = d.getDate();
             var day = (d1 < 10) ? '0' + d1 : d1;
@@ -53,7 +60,6 @@
                 if (loaded[currBlock-1]) {
                     var prev = loaded[currBlock-1];
                 } else {
-                    console.log(next);
                     var prev = new Date(next.getTime() - interval);
                 }
             } else {
@@ -67,8 +73,9 @@
                 startkey: startkey, endkey: endkey, include_docs: true}]), 
                 function(json, url) {
                     eventSource.loadJSON(json, url);
+                    tl.layout();
+
                     if (callback) callback();
-                    tl.layout()
                 }
             );
         }
@@ -241,25 +248,27 @@
                 }),
                 Timeline.createBandInfo({
                     overview: true,
-                    showEventText: false,
                     eventSource: eventSource,
+                    showEventText: false,
                     width:          "20%",
                     intervalUnit:   Timeline.DateTime.MONTH, 
                     intervalPixels: 100,
                     date: "Jan 01 2004 00:00:00 GMT",
-                    trackHeight:    0.4,
-                    trackGap:       0.2,
+                    theme: theme1,
+                    layout:         'overview'
+
                 })
             ];
 
-            for(var x=1; x < bandInfos.length; x++) {
-                bandInfos[x].syncWith = (x -1);
-                bandInfos[x].highlight = true;
-            }
+            bandInfos[1].syncWith = 0;
+            bandInfos[1].highlight = true;
 
+            
             tl = Timeline.create(document.getElementById("afg-timeline"), bandInfos);
           
-            load(new Date(startDate.getTime() + interval), 0);
+            load(new Date(startDate.getTime() + interval), 0, function() { 
+                tl.layout();
+            });
             tl.getBand(0).addOnScrollListener(getData);
 
             // manage map update
@@ -288,7 +297,6 @@
                     var start = evt.getStart();
                     var obj = evt._obj;
 
-                    
                     if (!oldFeatures[start.getTime()]) 
                         oldFeatures[start.getTime()] = [];
 
@@ -312,12 +320,7 @@
                     vectorLayer.addFeatures(feature);
                 }
             });
-            $("#afg-year").change(function() {
-                var d= new Date($(this).val(), 0, 1);
-                console.log(d.toString());
-                tl.getBand(0).setCenterVisibleDate(d);
-                tl.layout();
-            });
+            $("#afg-year").change(changeYear);
             window.onresize = onResize;
         }   
 

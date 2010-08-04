@@ -121,7 +121,7 @@
                 control: []
             };
 
-            map = new OpenLayers.Map('map', options);
+            map = new OpenLayers.Map('afg-map', options);
             var gphy = new OpenLayers.Layer.Google(
                 "Google Physical",
                 {type: google.maps.MapTypeId.TERRAIN, sphericalMercator: true}

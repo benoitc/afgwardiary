@@ -77,6 +77,11 @@
             mind = minDate.getTime();
             maxd = maxDate.getTime();
 
+            if (map.popups.length >= 1) {
+                map.removePopup(map.popups[0]);
+            }
+            
+
             for (var i = 0; i< oldFeatures.length; i++) {
                 var feature = oldFeatures[i],
                     startTime = feature.data.startTime;
@@ -240,7 +245,11 @@
                         Type: data.title,
                         Affiliation: data.affiliation,
                         Category: data.category
-                    }); 
+                    });
+
+                    if (map.popups.length == 1) {
+                        map.removePopup(map.popups[0]);
+                    } 
                     
                     var popup = new OpenLayers.Popup("report", 
                                 new OpenLayers.LonLat(feature.geometry.x, feature.geometry.y),
@@ -256,6 +265,15 @@
                     map.addPopup(popup);
                 },
                 featureunselected: function(evt) {
+                    var feature = evt.feature;
+                    if (feature.popup) {
+                        feature.popup.feature = null;
+                        map.removePopup(feature.popup);
+                        feature.popup.destroy();
+                        feature.popup = null;
+                    }
+                },
+                featureremoved: function(evt) {
                     var feature = evt.feature;
                     if (feature.popup) {
                         feature.popup.feature = null;

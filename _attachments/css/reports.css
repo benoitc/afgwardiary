@@ -292,22 +292,17 @@ footer {
 }
 
 
-div#timeline-container {
-    width: 100%;
-    height: 200px;
-}
-
-
 #afg-timeline {
     display: block;
     font-size: 65%;
     background: #CCCCCC;
     
-    height: 100%;
+    height: 200px;
     width: 100%;
 }
 
 #map-container {
+    position:relative;
     width: 100%;
     height: 400px;
     z-index: 0;

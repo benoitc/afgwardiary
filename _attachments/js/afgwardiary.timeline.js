@@ -18,7 +18,7 @@
             dataMaxDate = "";
 
         // 2 months interval
-        var interval = 5184000000;
+        var interval = 2628000000;
 
         // dataset start in 2004
         var startDate = new Date(2004,0,1),
@@ -50,7 +50,12 @@
 
         function load(next, currBlock, callback) {
             if (currBlock > 0) {
-                var prev = loaded[currBlock-1];
+                if (loaded[currBlock-1]) {
+                    var prev = loaded[currBlock-1];
+                } else {
+                    console.log(next);
+                    var prev = new Date(next.getTime() - interval);
+                }
             } else {
                 var prev = startDate;
             }
@@ -83,7 +88,7 @@
                 load(new Date(currBlockTime), currBlock);
             }
 
-            if (nextBlockTime < band.getMaxDate().getTime() &&
+            /*if (nextBlockTime < band.getMaxDate().getTime() &&
                 (!dataMaxDate || nextBlockTime < dataMaxDate.getTime()) &&
                 !loaded[currBlock + 1]) {
                 // load next block
@@ -95,7 +100,7 @@
                 !loaded[currBlock - 1]) {
                 // load previous block
                 load(new Date(prevBlockTime), currBlock - 1);
-            }
+            }*/
         }
 
         var epsg4326 = new OpenLayers.Projection("EPSG:4326");
@@ -278,7 +283,6 @@
                 vectorLayer.destroyFeatures(features_to_remove);
 
                 var iterator = eventSource.getEventIterator(minDate, maxDate);
-                
                 while(iterator.hasNext()) {
                     var evt = iterator.next();
                     var start = evt.getStart();
@@ -307,6 +311,12 @@
                     evt.feature = feature; 
                     vectorLayer.addFeatures(feature);
                 }
+            });
+            $("#afg-year").change(function() {
+                var d= new Date($(this).val(), 0, 1);
+                console.log(d.toString());
+                tl.getBand(0).setCenterVisibleDate(d);
+                tl.layout();
             });
             window.onresize = onResize;
         }   

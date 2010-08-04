@@ -12,6 +12,8 @@
     <sidebar class="small pane">
         <a href='index.html'><img alt='WikiLeaks logo'
             src='gfx/WL_Hour_Glass_small.png'></a>
+        <div><h3><a href="timeline.html">Timeline</a></h3></div>
+
         <div><h3>Browse by <a id="type" href="#"
                     class="browse">Type</a></h3></div>
         <div><h3>Browse by <a id="category" href="#"
@@ -22,12 +24,18 @@
                     class="browse">Affiliation</a></h3></div>
         <div><h3>Browse by <a id="date" href="#"
                     class="browse">Date</a></h3></div>
-    </sidebar>
+            </sidebar>
     <section class='pane big'>
      <h1>Kabul War Diary (unofficial)</h1>
      <h3>Couchapp by <a href="http://benoitc.io">benoitc</a></h3>
-      <h3></h3>
-      <div>
+     
+     <div id="feature">
+        <h1><a href="timeline.html">Look the Timeline</a></h1>
+        <p><a href="timeline.html">Look the content</a> in a timeline with each reports displayed on
+        the map.</p>
+    </div> 
+
+      <div class="about">
         <p><b>Sunday, July 26 5pm EST.</b></p>
         <br />
         <p>WikiLeaks today released over 75,000 secret US military reports covering the war in Afghanistan.</p>
@@ -102,9 +110,7 @@
           <a href='http://wikileaks.org/wiki/Special:Support' target='_blank'>Help us extend and defend this work</a>
         </span>
       </section>
-      <footer>
-        <p>Benoît Chesneau</p>
-      </footer>
+ 
   </body>
   <script src="vendor/couchapp/loader.js"></script>
   <script src="js/afgwardiary.js"></script>

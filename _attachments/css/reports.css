@@ -279,6 +279,8 @@ footer {
     display: block;
 	clear: both;
 	text-align: center;
+    width: 100%;
+    padding-top: 15px;
 }
 
 #mtimes ul {
@@ -326,4 +328,32 @@ footer {
 .olPopup th,
 .olPopup td {
     font-size: 10px;
+}
+
+#feature {
+    display: block;
+    width: 500px;
+    height: 100px;
+    margin-bottom: 15px;
+    margin-left: auto;
+    margin-right: auto;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+    font-size: 11px;
+    background: #000;
+    border 1px solid #aaa;
+    color: #fff;
+    padding: 10px;
+}
+
+#feature p {
+    font-size: 14px;
+    color: #fff;
+}
+
+div.about { 
+    display: block;
+    width: 100%;
+    text-align: left; 
 }

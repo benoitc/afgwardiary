@@ -26,7 +26,6 @@
 
         var eventSource = new Timeline.DefaultEventSource();
 
-
         function onResize() {
             if (resizeTimerID == null) {
                  resizeTimerID = window.setTimeout(function() {
@@ -62,11 +61,9 @@
             tl.loadJSON(makePath(["_list", "timeline", "full_date", {
                 startkey: startkey, endkey: endkey, include_docs: true}]), 
                 function(json, url) {
-                    
                     eventSource.loadJSON(json, url);
                     if (callback) callback();
                     tl.layout()
-                    
                 }
             );
         }
@@ -103,7 +100,6 @@
 
         var epsg4326 = new OpenLayers.Projection("EPSG:4326");
         var epsg900913 =  new OpenLayers.Projection("EPSG:900913")
-
 
         var afgLL = new OpenLayers.LonLat(57.499846, 25.5000872);
         var afgUR = new OpenLayers.LonLat(72.4998462, 40.5000872);
@@ -146,7 +142,6 @@
 
             vectorLayer = new OpenLayers.Layer.Vector("Reports");
             map.addLayers([gphy, gmap, ghyb, gsat, vectorLayer]);
-
             
             click = new OpenLayers.Control.SelectFeature(
                 [vectorLayer],
@@ -170,7 +165,6 @@
                         Category: data.category
                     }); 
                     
-
                     var popup = new OpenLayers.Popup("report", 
                                 new OpenLayers.LonLat(feature.geometry.x, feature.geometry.y),
                                 new OpenLayers.Size(200,220),
@@ -183,8 +177,6 @@
                     feature.popup = popup;
                     popup.feature = feature;
                     map.addPopup(popup);
-
-
                 },
                 featureunselected: function(evt) {
                     var feature = evt.feature;
@@ -194,12 +186,9 @@
                         feature.popup.destroy();
                         feature.popup = null;
                     }
-                    
                 }
             });
             click.activate()
-
-           
 
             var customControls = [new OpenLayers.Control.DragPan(),
                                 new OpenLayers.Control.PanZoom(),
@@ -210,20 +199,16 @@
                 map.addControl(control);
                 control.activate();
             }
-            
 
             var center =  new OpenLayers.LonLat(65.0, 33.0);
             map.setCenter(center.transform(epsg4326, epsg900913), 6);
-
         }
 
         var oldFeatures = {}; 
             
         this.init = function() {
-
             // init map
             self.initMap();
-
 
             Timeline.OriginalEventPainter.prototype._showBubble = function(x, y, evt) {
                 var obj = evt._obj;
@@ -238,8 +223,6 @@
             theme1.autoWidth = true;
             theme1.timeline_start = new Date(2004,0, 1);
             theme1.timeline_end = new Date(2010,0, 1);
-
-            
 
             var bandInfos = [
                 Timeline.createBandInfo({
@@ -293,7 +276,6 @@
                     }
                 }
                 vectorLayer.destroyFeatures(features_to_remove);
-    
 
                 var iterator = eventSource.getEventIterator(minDate, maxDate);
                 
@@ -325,20 +307,13 @@
                     evt.feature = feature; 
                     vectorLayer.addFeatures(feature);
                 }
-                
-                    
             });
-
-            
             window.onresize = onResize;
-            
         }   
 
-        
         $(document).ready(function(){ 
             self.init(); 
         });
-
     }
 
     $.extend($.afgwardiary, {

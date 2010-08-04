@@ -296,9 +296,7 @@ div#timeline-container {
     width: 100%;
     height: 200px;
 }
-.timeline-band-inner {
-    height: 40px;
-}
+
 
 #afg-timeline {
     display: block;

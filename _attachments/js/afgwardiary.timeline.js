@@ -170,21 +170,32 @@
                         Category: data.category
                     }); 
                     
-                    var popup;
 
-                    popup = new OpenLayers.Popup("report", 
+                    var popup = new OpenLayers.Popup("report", 
                                 new OpenLayers.LonLat(feature.geometry.x, feature.geometry.y),
                                 new OpenLayers.Size(200,220),
                                 content, true, function() {
-                                    popup.destroy();
+                                    click.unselect(this.feature);
                                 });
 
                     popup.keepInMap = true;
                     popup.panMapIfOutOfView = true;
+                    feature.popup = popup;
+                    popup.feature = feature;
                     map.addPopup(popup);
 
 
                 },
+                featureunselected: function(evt) {
+                    var feature = evt.feature;
+                    if (feature.popup) {
+                        feature.popup.feature = null;
+                        map.removePopup(feature.popup);
+                        feature.popup.destroy();
+                        feature.popup = null;
+                    }
+                    
+                }
             });
             click.activate()
 
@@ -213,6 +224,16 @@
             // init map
             self.initMap();
 
+
+            Timeline.OriginalEventPainter.prototype._showBubble = function(x, y, evt) {
+                var obj = evt._obj;
+                
+                var feature = evt.feature;
+                var center = feature.geometry.bounds.getCenterLonLat();
+                map.setCenter(center, 12, true, true);
+                vectorLayer.redraw(true);
+            }
+            
             var theme1 = Timeline.ClassicTheme.create();
             theme1.autoWidth = true;
             theme1.timeline_start = new Date(2004,0, 1);
@@ -300,7 +321,8 @@
                             graphicWidth: 21
                         }
                     );
-                    oldFeatures[start.getTime()].push(feature); 
+                    oldFeatures[start.getTime()].push(feature);
+                    evt.feature = feature; 
                     vectorLayer.addFeatures(feature);
                 }
                 

@@ -15,7 +15,8 @@
             popup,
             resizeTimerID = null,
             loaded = {},
-            dataMaxDate = "";
+            dataMaxDate = "",
+            oldFeatures = [];
 
         // 2 months interval
         var interval = 2628000000;
@@ -54,6 +55,85 @@
             return year + "-" + month + "-" + day;
         }
 
+        function hideFeature(e, feature) {
+            vectorLayer.removeFeatures([feature]);
+        }
+
+        function showFeature(e, feature) {
+            vectorLayer.drawFeature(feature);
+        }
+
+        function insertFeature(e, feature) {
+            vectorLayer.addFeatures(feature)
+        }
+
+
+
+        function updateMap() {
+            var band = tl.getBand(0),
+                minDate = band.getMinVisibleDate(),
+                maxDate = band.getMaxVisibleDate();
+
+            mind = minDate.getTime();
+            maxd = maxDate.getTime();
+
+            for (var i = 0; i< oldFeatures.length; i++) {
+                var feature = oldFeatures[i],
+                    startTime = feature.data.startTime;
+                if (startTime < mind || startTime > maxd) {
+                    $("#afg-map").trigger("hideFeature", feature);
+                }
+            }
+            oldFeatures = [];
+
+            var iterator = eventSource.getEventIterator(minDate, maxDate);
+
+
+            function processEvents() {
+                while(iterator.hasNext()) {
+                    var evt = iterator.next(),
+                        start = evt.getStart(),
+                        startTime = start.getTime(),
+                        obj = evt._obj;
+
+                    var feature = vectorLayer.getFeatureById(obj.id);
+
+                    if (feature) {
+                        oldFeatures.push(feature);
+                        $("#afg-map").trigger("showFeature", feature);
+                    } else {
+
+                        var point = new OpenLayers.Projection.transform(
+                                new OpenLayers.Geometry.Point( obj.coordinates[0], obj.coordinates[1]),
+                                new OpenLayers.Projection("EPSG:4326"), 
+                                new OpenLayers.Projection("EPSG:900913") )
+                        var feature = new OpenLayers.Feature.Vector(
+                            point,
+                            {
+                                startTime: startTime,
+                                event: obj,
+                            },
+                            {
+                                externalGraphic: 'openlayers/img/marker.png',
+                                graphicHeight: 25, 
+                                graphicWidth: 21
+                            }
+                        );
+                        feature.id = obj.id;
+
+                        oldFeatures.push(feature);
+                        evt.feature = feature; 
+                        $("#afg-map").trigger("insertFeature", feature); 
+                    }
+                }
+                if (!iterator.hasNext() && processEventsInterval) {
+                    clearInterval(processEventsInterval);
+                }
+            }
+
+            var processEventsInterval = setInterval(processEvents, 25);
+            
+        }
 
         function load(next, currBlock, callback) {
             if (currBlock > 0) {
@@ -84,9 +164,7 @@
             var band = tl.getBand(0),
                 now = band.getCenterVisibleDate(),
                 currBlock = Math.floor((now.getTime() - startDate.getTime()) / interval),
-                currBlockTime = startDate.getTime() + (interval * (currBlock+1))
-                nextBlockTime = currBlockTime + interval,
-                prevBlockTime = currBlockTime - interval;
+                currBlockTime = startDate.getTime() + (interval * (currBlock+1));
 
             if ((!dataMaxDate || currBlockTime < dataMaxDate.getTime()) &&
                 (!dataMinDate || currBlockTime > dataMinDate.getTime()) &&
@@ -95,19 +173,6 @@
                 load(new Date(currBlockTime), currBlock);
             }
 
-            /*if (nextBlockTime < band.getMaxDate().getTime() &&
-                (!dataMaxDate || nextBlockTime < dataMaxDate.getTime()) &&
-                !loaded[currBlock + 1]) {
-                // load next block
-                load(new Date(nextBlockTime), currBlock + 1);
-            }
-
-            if (prevBlockTime > band.getMinDate().getTime() &&
-                (!dataMinDate || prevBlockTime > dataMinDate.getTime()) &&
-                !loaded[currBlock - 1]) {
-                // load previous block
-                load(new Date(prevBlockTime), currBlock - 1);
-            }*/
         }
 
         var epsg4326 = new OpenLayers.Projection("EPSG:4326");
@@ -216,15 +281,13 @@
             map.setCenter(center.transform(epsg4326, epsg900913), 6);
         }
 
-        var oldFeatures = {}; 
+        
             
         this.init = function() {
             // init map
             self.initMap();
 
             Timeline.OriginalEventPainter.prototype._showBubble = function(x, y, evt) {
-                var obj = evt._obj;
-                
                 var feature = evt.feature;
                 var center = feature.geometry.bounds.getCenterLonLat();
                 map.setCenter(center, 12, true, true);
@@ -233,8 +296,7 @@
             
             var theme1 = Timeline.ClassicTheme.create();
             theme1.autoWidth = true;
-            theme1.timeline_start = new Date(2004,0, 1);
-            theme1.timeline_end = new Date(2010,0, 1);
+
 
             var bandInfos = [
                 Timeline.createBandInfo({
@@ -273,55 +335,15 @@
 
             // manage map update
 
-            tl.getBand(0).addOnScrollListener(function(band) {
-                var band = tl.getBand(0),
-                    minDate = band.getMinVisibleDate(),
-                    maxDate = band.getMaxVisibleDate();
-
-                mind = minDate.getTime();
-                maxd = maxDate.getTime();
-                var features_to_remove = [];
-                for (d in oldFeatures) {
-                    if (d < mind || d > maxd) {
-                        $.each(oldFeatures[d], function(i, val) {
-                            features_to_remove.push(val);
-                        });
-                        delete oldFeatures[d];
-                    }
-                }
-                vectorLayer.destroyFeatures(features_to_remove);
-
-                var iterator = eventSource.getEventIterator(minDate, maxDate);
-                while(iterator.hasNext()) {
-                    var evt = iterator.next(),
-                        start = evt.getStart(),
-                        startTime = star.getTime(),
-                        obj = evt._obj;
-
-                    if (!oldFeatures[startTime]) 
-                        oldFeatures[startTime] = [];
-
-                    var point = new OpenLayers.Projection.transform(
-                            new OpenLayers.Geometry.Point( obj.coordinates[0], obj.coordinates[1]),
-                            new OpenLayers.Projection("EPSG:4326"), 
-                            new OpenLayers.Projection("EPSG:900913") )
-                    var feature = new OpenLayers.Feature.Vector(
-                        point,
-                        {
-                            event: obj
-                        },
-                        {
-                            externalGraphic: 'openlayers/img/marker.png',
-                            graphicHeight: 25, 
-                            graphicWidth: 21
-                        }
-                    );
-                    oldFeatures[startTime].push(feature);
-                    evt.feature = feature; 
-                    vectorLayer.addFeatures(feature);
-                }
+            tl.getBand(0).addOnScrollListener(function() {
+                $("#afg-map").trigger("updatemap");
             });
             $("#afg-year").change(changeYear);
+
+            $("#afg-map").bind("updatemap", updateMap);
+            $("#afg-map").bind("hideFeature", hideFeature);
+            $("#afg-map").bind("showFeature", showFeature);
+            $("#afg-map").bind("insertFeature", insertFeature);
             window.onresize = onResize;
         }   
 

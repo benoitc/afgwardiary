@@ -1,0 +1,23 @@
+[
+    {
+        "from": "/warlogs",
+        "to": "../.."
+    },
+
+    {
+        "from": "/warlogs/*",
+        "to": "../../*"
+    },
+    {
+        "from": "/_replicate",
+        "to": "../../../_replicate"
+    },
+    {
+        "from": "/",
+        "to": "index.html"
+    },
+    {
+        "from": "/*",
+        "to": "*"
+    }
+]

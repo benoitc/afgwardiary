@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="utf-8"/> 
-    <title>Kabul War Diary</title>
+    <title>Iraq War logs</title>
     <link href='gfx/favicon.ico' rel='shortcut icon'>
     <link href='css/reset-fonts-grids.css' rel='stylesheet' type='text/css'>
     <link href='css/reports.css' rel='stylesheet' type='text/css'>
@@ -26,89 +26,47 @@
                     class="browse">Date</a></h3></div>
             </sidebar>
     <section class='pane big'>
-     <h1>Kabul War Diary (unofficial)</h1>
+     <h1>Iraq War Logs (unofficial)</h1>
      <h3>Couchapp by <a href="http://benoitc.io">benoitc</a></h3>
-     
      <div id="feature">
-        <h1><a href="timeline.html">Look the Timeline</a></h1>
-        <p><a href="timeline.html">Look the content</a> in a timeline with each reports displayed on
-        the map.</p>
+        <h1>Replicate the warlogs!</h1>
+        <p>To replicate warlogs in your own <a
+            href="http://couchdb.apache.org">CouchDB</a>, do the
+        following:</p>
+        <pre><code>curl -X POST <a
+href="http://127.0.0.1:5984/_replicate">http://127.0.0.1:5984/_replicate</a> \
+-H "Content-Type: application/json" \
+-d '{ "source": "<a
+href="http://warlogs.upondata.com/warlogs">http://warlogs.upondata.com/warlogs</a>", \
+"target": "http://127.0.0.1:5984/warlogs", "create_target": true}'</code></pre>
     </div> 
 
-      <div class="about">
-        <p><b>Sunday, July 26 5pm EST.</b></p>
-        <br />
-        <p>WikiLeaks today released over 75,000 secret US military reports covering the war in Afghanistan.</p>
-        <p>The Afghan War Diary an extraordinary secret compendium of over 91,000 reports covering the war in Afghanistan from 2004 to 2010. The reports describe the majority of lethal military actions involving the United States military. They include the number of persons internally stated to be killed, wounded, or detained during each action, together with the precise geographical location of each event, and the military units involved and major weapon systems used.</p>
-        <p>The Afghan War Diary is the most significant archive about the reality of war to have ever been released during the course of a war. The deaths of tens of thousands is normally only a statistic but the archive reveals the locations and the key events behind each most of these deaths. We hope its release will lead to a comprehensive understanding of the war in Afghanistan and provide the raw ingredients necessary to change its course.</p>
-        <p>Most entries have been written by soldiers and intelligence officers listening to reports radioed in from front line deployments. However the reports also contain related information from Marines intelligence, US Embassies, and reports about corruption and development activity across Afghanistan.</p>
-        <p>Each report consists of the time and precise geographic location of an event that the US Army considers significant. It includes several additional standardized fields: The broad type of the event (combat, non-combat, propaganda, etc.); the category of the event as classified by US Forces, how many were detained, wounded, and killed from civilian, allied, host nation, and enemy forces; the name of the reporting unit and a number of other fields, the most significant of which is the summary - an English language description of the events that are covered in the report.</p>
-        <p>The Diary is available on the web and can be viewed in chronological order and by by over 100 categories assigned by the US Forces such as: "escalation of force", "friendly-fire", "development meeting", etc. The reports can also be viewed by our "severity" measure-the total number of people killed, injured or detained. All incidents have been placed onto a map of Afghanistan and can be viewed on Google Earth limited to a particular window of time or place. In this way the unfolding of the last six years of war may be seen.</p>
-        <p>The material shows that cover-ups start on the ground. When reporting their own activities US Units are inclined to classify civilian kills as insurgent kills, downplay the number of people killed or otherwise make excuses for themselves. The reports, when made about other US Military units are more likely to be truthful, but still down play criticism. Conversely, when reporting on the actions of non-US ISAF forces the reports tend to be frank or critical and when reporting on the Taliban or other rebel groups, bad behavior is described in comprehensive detail. The behavior of the Afghan Army and Afghan authorities are also frequently described.</p>
-        <p>The reports come from US Army with the exception most Special Forces activities. The reports do not generally cover top-secret operations or European and other ISAF Forces operations. However when a combined operation involving regular Army units occurs, details of Army partners are often revealed. For example a number of bloody operations carried out by Task Force 373, a secret US Special Forces assassination unit, are exposed in the Diary -- including a raid that lead to the death of seven children.</p>
-        <p>This archive shows the vast range of small tragedies that are almost never reported by the press but which account for <b>the overwhelming majority of deaths and injuries</b>.</p>
-        <p>We have delayed the release of some 15,000 reports from total archive as part of a harm minimization process demanded by our source. After further review, these reports will be released, with occasional redactions, and eventually, in full, as the security situation in Afghanistan permits.</p>
-        <p>Additional information from our media partners:</p>
-        <ul>
-          <li>Der Spiegel: <a href="http://www.spiegel.de/international/world/0,1518,708314,00.html">http://www.spiegel.de/international/world/0,1518,708314,00.html</a></li>
-          <li>The Guardian: <a href="http://www.guardian.co.uk/world/series/afghanistan-the-war-logs">http://www.guardian.co.uk/world/series/afghanistan-the-war-logs</a></li>
-          <li>The New York Times: <a href="http://www.nytimes.com/interactive/world/war-logs.html">http://www.nytimes.com/interactive/world/war-logs.html</a></li>
-        </ul>
-        <object classid='clsid:D27CDB6E-AE6D-11cf-96B8-444553540000' codebase='http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=9,0,47,0' height='260' id='flashObj' width='370'>
-          <param name='movie' value='http://c.brightcove.com/services/viewer/federated_f9/69900095001?isVid=1' />
-          <param name='flashVars' value='videoId=248232315001&amp;playerID=69900095001&amp;domain=embed&amp;dynamicStreaming=true' />
-          <param name='base' value='http://admin.brightcove.com' />
-          <param name='seamlesstabbing' value='false' />
-          <param name='allowFullScreen' value='true' />
-          <param name='swLiveConnect' value='true' />
-          <param name='allowScriptAccess' value='always' />
-          <embed allowFullScreen='true' allowScriptAccess='always' base='http://admin.brightcove.com' bgcolor='#ffffff' flashVars='ideoId=248232315001&amp;playerID=69900095001&amp;domain=embed&amp;dynamicStreaming=true' height='260' name='flashObj' pluginspage='http://www.macromedia.com/shockwave/download/index.cgi?P1_Prod_Version=ShockwaveFlash' seamlesstabbing='false' src='http://c.brightcove.com/services/viewer/federated_f9/69900095001?isVid=1' swLiveConnect='true' type='application/x-shockwave-flash' width='370'></embed>
-        </object>
-        <br />
-        <br />
-        <b>Afghan War Diary - Reading guide</b>
-        <br />
-        <p>The Afghan War Diary (AWD for short) consists of messages from several important US military communications systems. The messaging systems have changed over time; as such reporting standards and message format have changed as well. This reading guide tries to provide some helpful hints on interpretation and understanding of the messages contained in the AWD.</p>
-        <p>Most of the messages follow a pre-set structure that is designed to make automated processing of the contents easier. It is best to think of the messages in the terms of an overall collective logbook of the Afghan war. The AWD contains the relevant events, occurrences and intelligence experiences of the military, shared among many recipients. The basic idea is that all the messages taken together should provide a full picture of a days important events, intelligence, warnings, and other statistics. Each unit, outpost, convoy, or other military action generates report about relevant daily events. The range of topics is rather wide: Improvised Explosives Devices encountered, offensive operations, taking enemy fire, engagement with possible hostile forces, talking with village elders, numbers of wounded, dead, and detained, kidnappings, broader intelligence information and explicit threat warnings from intercepted radio communications, local informers or the afghan police. It also includes day to day complaints about lack of equipment and supplies.</p>
-        <p>The description of events in the messages is often rather short and terse. To grasp the reporting style, it is helpful to understand the conditions under which the messages are composed and sent. Often they come from field units who have been under fire or under other stressful conditions all day and see the report-writing as nasty paperwork, that needs to be completed with little apparent benefit to expect. So the reporting is kept to the necessary minimum, with as little type-work as possible. The field units also need to expect questions from higher up or disciplinary measures for events recorded in the messages, so they will tend to gloss over violations of rules of engagement and other problematic behavior; the reports are often detailed when discussing actions or interactions by enemy forces. Once it is in the AWD messages, it is officially part of the record - it is subject to analysis and scrutiny. The truthfulness and completeness especially of descriptions of events must always be carefully considered. Circumstances that completely change the meaning of an reported event may have been omitted.</p>
-        <p>The reports need to answer the critical questions: Who, When, Where, What, With whom, by what Means and Why. The AWD messages are not addressed to individuals but to groups of recipients that are fulfilling certain functions, such as duty officers in a certain region. The systems where the messages originate perform distribution based on criteria like region, classification level and other information. The goal of distribution is to provide those with access and the need to know, all of the information that relevant to their duties. In practice, this seems to be working imperfectly. The messages contain geo-location information in the forms of latitude-longitude, military grid coordinates and region.</p>
-        <p>The messages contain a large number of abbreviations that are essential to understanding its contents. When browsing through the messages, underlined abbreviations pop up an little explanation, when the mouse is hovering over it. The meanings and use of some shorthands have changed over time, others are sometimes ambiguous or have several meanings that are used depending on context, region or reporting unit. If you discover the meaning of a so far unresolved acronym or abbreviations, or if you have corrections, please submit them to wl-office@sunshinepress.org.</p>
-        <p>An especially helpful reference to names of military units and task-forces and their respective responsibilities can be found at <a href="http://www.globalsecurity.org/military/ops/enduring-freedom.htm">http://www.globalsecurity.org/military/ops/enduring-freedom.htm</a></p>
-        <p>The site also contains a list of bases, airfields <a href="http://www.globalsecurity.org/military/facility/afghanistan.htm">http://www.globalsecurity.org/military/facility/afghanistan.htm</a> Location names are also often shortened to three-character acronyms.</p>
-        <p>Messages may contain date and time information. Dates are mostly presented in either US numeric form (Year-Month-Day, e.g. 2009-09-04) or various Euro-style shorthands (Day-Month-Year, e.g. 2 Jan 04 or 02-Jan-04 or 2jan04 etc.).</p>
-        <p>Times are frequently noted with a time-zone identifier behind the time, e.g. "09:32Z". Most common are Z (Zulu Time, aka. UTC time zone), D (Delta Time, aka. UTC + 4 hours) and B (Bravo Time, aka UTC + 2 hours). A full list off time zones can be found here: <a href="http://www.timeanddate.com/library/abbreviations/timezones/military/">http://www.timeanddate.com/library/abbreviations/timezones/military/</a></p>
-        <p>Other times are noted without any time zone identifier at all. The Afghanistan time zone is AFT (UTC + 4:30), which may complicate things further if you are looking up messages based on local time.</p>
-        <p>Finding messages relating to known events may be complicated by date and time zone shifting; if the event is in the night or early morning, it may cause a report to appear to be be misfiled. It is advisable to always look through messages before and on the proceeding day for any event.</p>
-        <p>David Leigh, the Guardian's investigations editor, explains the online tools they have created to help you understand the secret US military files on the war in Afghanistan: <a href="http://www.guardian.co.uk/world/datablog/video/2010/jul/25/afghanistan-war-logs-video-tutorial">http://www.guardian.co.uk/world/datablog/video/2010/jul/25/afghanistan-war-logs-video-tutorial</a></p>
-        <b>Understanding the structure of the report</b>
-        <br />
-        <ul>
-          <li>The message starts with a unique <b>ReportKey<b>; it may be used to find messages and also to reference them.</li>
-          <li>The next field is <b>DateOccurred</b>; this provides the date and time of the event or message. See Time and Date formats for details on the used formats.</li>
-          <li><b>Type</b> contains typically a broad classification of the type of event, like Friendly Action, Enemy Action, Non-Combat Event. It can be used to filter for messages of a certain type.</li>
-          <li><b>Category</b> further describes what kind of event the message is about. There are a lot of categories, from propaganda, weapons cache finds to various types of combat activities.</li>
-          <li><b>TrackingNumber</b> Is an internal tracking number.</li>
-          <li><b>Title</b> contains the title of the message.</li>
-          <li><b>Summary</b> is the actual description of the event. Usually it contains the bulk of the message content.</li>
-          <li><b>Region</b> contains the broader region of the event.</li>
-          <li><b>AttackOn</b> contains the information who was attacked during an event.</li>
-          <li><b>ComplexAttack</b> is a flag that signifies that an attack was a larger operation that required more planning, coordination and preparation. This is used as a quick filter criterion to detect events that were out of the ordinary in terms of enemy capabilities.</li>
-          <li><b>ReportingUnit, UnitName, TypeOfUnit</b> contains the information on the military unit that authored the report.</li>
-          <li>Wounded and death are listed as numeric values, sorted by affiliation. WIA is the abbreviation for Wounded In Action. KIA is the abbreviation for Killed In Action. The numbers are recorded in the fields <b>FriendlyWIA,FriendlyKIA,HostNationWIA,HostNationKIA,CivilianWIA,CivilianKIA,EnemyWIA,EnemyKIA</b></li>
-          <li>Captured enemies are numbered in the field <b>EnemyDetained</b>.</li>
-          <li>The location of events are recorded in the fields <b>MGRS (Military Grid Reference System), Latitude, Longitude</b>.</li>
-          <li>The next group of fields contains information on the overall military unit, like ISAF Headquarter, that a message originated from or was updated by. Updates frequently occur when an analysis group, like one that investigated an incident or looked into the makeup of an Improvised Explosive Device added its results to a message.</li>
-          <li><b>OriginatorGroup, UpdatedByGroup</b></li>
-          <li><b>CCIR</b> Commander's Critical Information Requirements</li>
-          <li>If an activity that is reported is deemed "significant", this is noted in the field <b>Sigact</b>. Significant activities are analyzed and evaluated by a special group in the command structure.</li>
-          <li><b>Affiliation</b> describes if the event was of friendly or enemy nature.</li>
-          <li><b>DColor</b> controls the display color of the message in the messaging system and map views. Messages relating to enemy activity have the color Red, those relating to friendly activity are colored Blue.</li>
-          <li><b>Classification</b> contains the classification level of the message, e.g. Secret</li>
-        </ul>
-        <br />
-        <span>
-          <a href='http://wikileaks.org/wiki/Special:Support' target='_blank'>Help us extend and defend this work</a>
-        </span>
+    <div class="about">
+        <p>
+        At 5pm EST Friday 22nd October 2010 WikiLeaks released the largest classified military leak in history. The 391,832 reports ('The Iraq War Logs'), document the war and occupation in Iraq, from 1st January 2004 to 31st December 2009 (except for the months of May 2004 and March 2009) as told by soldiers in the United States Army. Each is a 'SIGACT' or Significant Action in the war.  They detail events as seen and heard by the US military troops on the  ground in Iraq and are the first real glimpse into the secret history of  the war that the United States government has been privy to throughout.
+        </p><p>
+        The reports detail 109,032 deaths  in Iraq, comprised of 66,081 'civilians'; 23,984 'enemy' (those labeled  as insurgents); 15,196 'host nation' (Iraqi government forces) and 3,771 'friendly' (coalition forces). The majority of the deaths (66,000, over 60%) of these are civilian deaths.That is 31 civilians dying every day during the six year period. For  comparison, the 'Afghan War Diaries', previously released by WikiLeaks,  covering the same period, detail the deaths of some 20,000 people. Iraq  during the same period, was five times as lethal with equivallent  population size.
+        </p>
+        <p>
+        Please <a href="http://warlogs.wikileaks.org/media/support.html">donate to WikiLeaks</a> to defend this information.
+        </p>
+
+        <div id="video">
+
+            <div id="videoobject">
+                <object width="425" height="344"><param name="movie" value="http://www.youtube.com/v/z1pTl8KdREk?fs=1&amp;hl=fr_FR&amp;rel=0&amp;color1=0x2b405b&amp;color2=0x6b8ab6"><param name="allowFullScreen" value="true"><param name="allowscriptaccess" value="always"><embed src="http://www.youtube.com/v/z1pTl8KdREk?fs=1&amp;hl=fr_FR&amp;rel=0&amp;color1=0x2b405b&amp;color2=0x6b8ab6" type="application/x-shockwave-flash" allowscriptaccess="always" allowfullscreen="true" width="425" height="344"></object>
+
+            </div>
+            <div id="videocomment">
+                <p>
+                </p>
+            </div>
+
+
+        </div>
+        <p>Official website <a
+            href="http://warlogs.wikileaks.org">here</a></p>
+        </div>
       </section>
  
   </body>
@@ -117,6 +75,6 @@
   <script type="text/javascript" charset="utf-8">
       $.couch.app(function(app) {
         new $.afgwardiary.Navigation(app);          
-      });
+        }, {db: "warlogs", design: "warlogs"});
   </script>
 </html>

@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="utf-8"/> 
-    <title>Kabul War Diary - Timeline</title>
+    <title>Iraq War Logs - Timeline</title>
     <link href='gfx/favicon.ico' rel='shortcut icon'>
     <link href='css/reset-fonts-grids.css' rel='stylesheet' type='text/css'>
     <link href='css/reports.css' rel='stylesheet' type='text/css'>
@@ -48,6 +48,7 @@
                 </select>
             </p>
         </form>
+        <div id="date"></div>
         <div id="afg-timeline">Timeline is loading...</div>
         <div id="afg-map"></div>
     </section>
@@ -62,7 +63,7 @@
         $.couch.app(function(app) {
             //new $.afgwardiary.Navigation(app);
             new $.afgwardiary.afgTimeline(app);
-        }); 
+        }, {db: "warlogs", design: "warlogs"}); 
     </script>
 </body>
 </html>

@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="utf-8"/> 
-    <title>Kabul War Diary</title>
+    <title>Iraq War Logs</title>
     <link href='{{ assetPath }}/gfx/favicon.ico' rel='shortcut icon'>
    <link href='{{ assetPath }}/css/reset-fonts-grids.css'
    rel='stylesheet' type='text/css'>
@@ -35,7 +35,7 @@
     </sidebar>
     <section class='pane big'>
         {{#doc}}
-        <h3>{{Type}} {{Title}}</h3>
+        <h3>{{Type}} {{{Title}}}</h3>
         <table class="report r2">
             <tr>
                 <th>Reference ID</th>
@@ -89,27 +89,33 @@
             </tr>
         </table>
 
-        <code>
-            <pre>{{ Summary }}</pre>
-        </code>
-        <code>
-            <pre>
-Report key: {{ _id }}
-Tracking number: {{ TrackingNumber }}
-Attack on: {{ AttackOn }}
-Complex attack: {{ ComplexAttack }}
-Reporting unit: {{ ReportingUnit }}
-Unit name: {{ UnitName }}
-Type of unit: {{ TypeOfUnit }}
-Originator group: {{ OriginatorGroup }}
-Updated by group: {{ UpdatedByGroup }}
-MGRS: {{ MGRS }}
-CCIR: {{ CCIR }}
-Sigact:  {{ Sigact }}
-DColor: {{ DColor }} 
-            </pre>
-        </code>
-        <br>
+        <p class="summary">{{{ Summary }}}</p>
+        <div>
+<dl>
+    <dt>Report key: <dd>{{{ _id }}}</dd></dt>
+    <dt>Tracking number: <dd>{{{ TrackingNumber }}}</dd></dt>
+    <dt>Attack on: <dd>{{{ AttackOn }}}</dd></dt>
+
+    <dt>Complex attack: <dd>{{{ ComplexAttack }}}</dd></dt>
+
+    <dt>Reporting unit: <dd>{{{ ReportingUnit }}}</dd></dt>
+
+    <dt>Unit name: <dd>{{{ UnitName }}}</dd></dt>
+
+    <dt>Type of unit: <dd>{{{ TypeOfUnit }}}</dd></dt>
+
+    <dt>Originator group: <dd>{{{ OriginatorGroup }}}</dd></dt>
+
+    <dt>Updated by group: <dd>{{{ UpdatedByGroup }}}</dd></dt>
+
+    <dt>MGRS: <dd>{{{ MGRS }}}</dd></dt>
+    <dt>CCIR: <dd>{{{ CCIR }}}</dd></dt>
+
+    <dt>Sigact:  <dd>{{{ Sigact }}}</dd></dt>
+
+    <dt>DColor: <dd>{{{ DColor }}} </dd></dt>
+</dl>
+    </div>
         <div id="map"></div>  
         <form id="mtimes"></form> 
         {{/doc}}
@@ -133,13 +139,13 @@ DColor: {{ DColor }}
       {{#doc}}var docDate = "{{Date }}";{{/doc}}
 
       $.couch.app(function(app) {
-              var makePath = app.require("vendor/couchapp/lib/path").makePath;
+        var makePath =app.require("vendor/couchapp/lib/path").makePath,
+            improveText =app.require("lib/text").improveText;
 
 
         $(document).ready(function(){ 
 
-            
-                 
+            improveText(); 
             function make_point(lon, lat) {
                 var point = new OpenLayers.Geometry.Point( lon, lat);
                 return new OpenLayers.Projection.transform(
@@ -153,9 +159,9 @@ DColor: {{ DColor }}
             var epsg4326 = new OpenLayers.Projection("EPSG:4326");
             var epsg900913 =  new OpenLayers.Projection("EPSG:900913")
 
-
-            var afgLL = new OpenLayers.LonLat(57.499846, 25.5000872);
-            var afgUR = new OpenLayers.LonLat(72.4998462, 40.5000872);
+            
+            var afgLL = new OpenLayers.LonLat(43.6330688945, 32.8879727554);
+            var afgUR = new OpenLayers.LonLat(43.9530688945, 33.2079727554);
             afgLL.transform(epsg4326, epsg900913);
             afgUR.transform(epsg4326, epsg900913);
 
@@ -164,9 +170,7 @@ DColor: {{ DColor }}
 
 
             var options = {
-                maxExtent: bounds.clone(),
-                restrictedExtent: bounds.clone(),
-                numZoomLevels: 20,
+                numZoomLevels: 15,
                 maxResolution: 156543.0339,
                 projection: new OpenLayers.Projection("EPSG:900913"),
                 displayProjection: new OpenLayers.Projection("EPSG:4326"),
@@ -183,16 +187,16 @@ DColor: {{ DColor }}
             );
             var gmap = new OpenLayers.Layer.Google(
                 "Google Streets", // the default
-                {numZoomLevels: 20, sphericalMercator: true}
+                {numZoomLevels: 15, sphericalMercator: true}
             );
             var ghyb = new OpenLayers.Layer.Google(
                 "Google Hybrid",
-                {type: google.maps.MapTypeId.HYBRID, numZoomLevels: 20, sphericalMercator: true}
+                {type: google.maps.MapTypeId.HYBRID, numZoomLevels: 15, sphericalMercator: true}
             );
             var gsat = new OpenLayers.Layer.Google(
                 "Google Satellite",
                 {type: google.maps.MapTypeId.SATELLITE, numZoomLevels:
-                22, sphericalMercator: true}
+                15, sphericalMercator: true}
                 );
 
             map.addLayers([gphy, gmap, ghyb, gsat]);
@@ -214,7 +218,6 @@ DColor: {{ DColor }}
                     epsg900913);
 
             var latlng = new OpenLayers.LonLat(point.x, point.y);
-
             // place current point
             var vectorLayer = new OpenLayers.Layer.Vector("Overlay");
             var feature = new OpenLayers.Feature.Vector(
@@ -224,8 +227,22 @@ DColor: {{ DColor }}
                     '{{assetPath}}/openlayers/img/marker.png',
                     graphicHeight: 25, graphicWidth: 21});
             vectorLayer.addFeatures(feature);
-            map.addLayer(vectorLayer)
+            
 
+            var style = new OpenLayers.Style({
+                    pointRadius: "${radius}",
+                    fillColor: "#ffcc66",
+                    fillOpacity: 0.8,
+                    strokeColor: "#cc6633",
+                    strokeWidth: 2,
+                    strokeOpacity: 0.8
+                }, {
+                    context: {
+                        radius: function(feature) {
+                            return Math.min(feature.attributes.count, 7) + 3;
+                        }
+                    }
+                });
 
             function jsonLayer(refresh) {
 
@@ -243,9 +260,12 @@ DColor: {{ DColor }}
                     sep = ",";
                 });
 
-                json_layer = new OpenLayers.Layer.Vector("Reports", {
+                var json_layer = new OpenLayers.Layer.Vector("Reports", {
 
-                    strategies: [new OpenLayers.Strategy.BBOX()],
+                    strategies: [
+                        new OpenLayers.Strategy.BBOX(), 
+                        new OpenLayers.Strategy.Cluster()
+                    ],
                     projection: new OpenLayers.Projection("EPSG:4326"),
                     protocol: new OpenLayers.Protocol.HTTP({
                         url: app.design.uri +
@@ -254,14 +274,20 @@ DColor: {{ DColor }}
                             years: years
                         },
                         format: new OpenLayers.Format.GeoJSON()
-                    })//,
-                    //styleMap: new OpenLayers.StyleMap(style)
+                    }),
+                    styleMap: new OpenLayers.StyleMap({
+                        "default": style,
+                        "select": {
+                            fillColor: "#8aeeef",
+                            strokeColor: "#32a8a9"
+                        }
+                    })
                 });
 
                 map.addLayer(vectorLayer)
                 map.addLayer(json_layer);
 
-                var report_ctl =  new OpenLayers.Control.SelectFeature(json_layer, {
+                /*var report_ctl =  new OpenLayers.Control.SelectFeature(json_layer, {
                     onSelect: function(feature) {
                         map.destroy(); 
                         window.location.href = feature.data.href;
@@ -269,11 +295,16 @@ DColor: {{ DColor }}
                     }
                 });
                 map.addControl(report_ctl);
-                
+                report_ctl.activate();*/
+
+                 
                 if (refresh) json_layer.redraw(true);
-                report_ctl.activate();
+                
             }
 
+            jsonLayer();
+            map.addLayer(vectorLayer)
+            map.setCenter(latlng, 10);
             
 
 
@@ -303,7 +334,7 @@ DColor: {{ DColor }}
             .appendTo(form);
 
             jsonLayer();
-            map.setCenter(latlng, 12);
+
 
         {{/doc}}
         });
@@ -360,6 +391,6 @@ DColor: {{ DColor }}
             
             return false;
         });        
-      });
+      }, {db: "warlogs", design: "warlogs"});
 </script>
 </html> 

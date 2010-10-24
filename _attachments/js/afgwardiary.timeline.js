@@ -19,7 +19,7 @@
             oldFeatures = [];
 
         // 2 months interval
-        var interval = 2628000000;
+        var interval = 131400000;
 
         // dataset start in 2004
         var startDate = new Date(2004,0,1),
@@ -170,7 +170,8 @@
                 now = band.getCenterVisibleDate(),
                 currBlock = Math.floor((now.getTime() - startDate.getTime()) / interval),
                 currBlockTime = startDate.getTime() + (interval * (currBlock+1));
-
+            
+            $("#date").html("current date:" + now.toUTCString());
             if ((!dataMaxDate || currBlockTime < dataMaxDate.getTime()) &&
                 (!dataMinDate || currBlockTime > dataMinDate.getTime()) &&
                 !loaded[currBlock]) {
@@ -183,8 +184,8 @@
         var epsg4326 = new OpenLayers.Projection("EPSG:4326");
         var epsg900913 =  new OpenLayers.Projection("EPSG:900913")
 
-        var afgLL = new OpenLayers.LonLat(57.499846, 25.5000872);
-        var afgUR = new OpenLayers.LonLat(72.4998462, 40.5000872);
+        var afgLL = new OpenLayers.LonLat(43.6330688945, 32.8879727554);
+        var afgUR = new OpenLayers.LonLat(43.9530688945, 33.2079727554);
         afgLL.transform(epsg4326, epsg900913);
         afgUR.transform(epsg4326, epsg900913);
 
@@ -295,7 +296,7 @@
                 control.activate();
             }
 
-            var center =  new OpenLayers.LonLat(65.0, 33.0);
+            var center =  new OpenLayers.LonLat(44.0, 33.0);
             map.setCenter(center.transform(epsg4326, epsg900913), 6);
         }
 
@@ -320,9 +321,10 @@
                 Timeline.createBandInfo({
                     eventSource: eventSource,
                     width:          "80%", 
-                    intervalUnit:   Timeline.DateTime.DAY, 
+                    intervalUnit:   Timeline.DateTime.HOUR, 
                     intervalPixels: 120,
                     date: "Jan 01 2004 00:00:00 GMT",
+                    timeZone: new Date().getTimezoneOffset() / 60,
                     theme: theme1,
                     layout: 'original'
                 }),
@@ -331,9 +333,10 @@
                     eventSource: eventSource,
                     showEventText: false,
                     width:          "20%",
-                    intervalUnit:   Timeline.DateTime.MONTH, 
+                    intervalUnit:   Timeline.DateTime.WEEK, 
                     intervalPixels: 100,
                     date: "Jan 01 2004 00:00:00 GMT",
+                    timeZone: new Date().getTimezoneOffset() / 60,
                     theme: theme1,
                     layout:         'overview'
 

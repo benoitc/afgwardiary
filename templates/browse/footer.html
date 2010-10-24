@@ -20,7 +20,10 @@
           prevKey = {{ prevKey }},
           currentView = "{{ currentView }}";
 
-      $.couch.app(function(app) {
+        
+    $.couch.app(function(app) {
+        document.body.innerHTML =
+            document.body.innerHTML.replace(/\%\%\%/g, "___");
         var makePath = app.require("vendor/couchapp/lib/path").makePath;
 
         var paginator = "";
@@ -107,6 +110,6 @@
         });
 
       
-      });
+    }, {db: "warlogs", design: "warlogs"});
 </script>
 </html>

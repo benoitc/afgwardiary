@@ -5,5 +5,5 @@ function (newDoc, oldDoc, userCtx, secObj) {
     return true; // admin can do anything
   }
  
-  return false; 
+  throw({unauthorized : "unauthorized access"});
 }
